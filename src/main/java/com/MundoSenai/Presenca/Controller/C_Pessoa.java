@@ -36,6 +36,7 @@ public class C_Pessoa {
                                @RequestParam("data_nasc") String data_nascimento,
                                @RequestParam("senha") String senha,
                                @RequestParam("confsenha") String conf_senha){
+        S_Pessoa.cadastrarPessoa(nome, email, cpf, telefone, data_nascimento, senha, conf_senha);
         return "redirect:/";
     }
 }
