@@ -2,6 +2,7 @@ package com.MundoSenai.Presenca.Controller;
 
 import com.MundoSenai.Presenca.Service.S_Pessoa;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,8 +36,15 @@ public class C_Pessoa {
                                @RequestParam("telefone") String telefone,
                                @RequestParam("data_nasc") String data_nascimento,
                                @RequestParam("senha") String senha,
-                               @RequestParam("confsenha") String conf_senha){
-        S_Pessoa.cadastrarPessoa(nome, email, cpf, telefone, data_nascimento, senha, conf_senha);
-        return "redirect:/";
+                               @RequestParam("confsenha") String conf_senha,
+                               Model model){
+        String mensagem = S_Pessoa.cadastrarPessoa(nome, email, cpf, telefone, data_nascimento, senha, conf_senha);
+        model.addAttribute("mensagem",mensagem);
+        model.addAttribute("nome",nome);
+        model.addAttribute("email",email);
+        model.addAttribute("cpf",cpf);
+        model.addAttribute("telefone",telefone);
+        model.addAttribute("data_nasc",data_nascimento);
+        return "Pessoa/cadastro";
     }
 }
