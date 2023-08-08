@@ -1,13 +1,14 @@
 package com.MundoSenai.Presenca.Controller;
 
+import com.MundoSenai.Presenca.Model.M_Pessoa;
 import com.MundoSenai.Presenca.Service.S_Pessoa;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@SessionAttributes("usuario")
 public class C_Pessoa {
     @GetMapping("/")
     public String helloWorld(){
@@ -16,11 +17,29 @@ public class C_Pessoa {
 
     @PostMapping("/")
     public String postLogin(@RequestParam("usuario") String usuario,
-                            @RequestParam("senha") String senha){
-        if(S_Pessoa.getPessoaLogin(usuario,senha) == null){
+                            @RequestParam("senha") String senha,
+                            HttpSession session){
+        session.setAttribute("usuario",S_Pessoa.getPessoaLogin(usuario,senha));
+        if(session.getAttribute("usuario") == null){
             return "Login/login";
         }else{
+            return "redirect:/Home";
+        }
+    }
+
+    @ModelAttribute("usuario")
+    public M_Pessoa getUsuario(HttpSession session) {
+        return (M_Pessoa) session.getAttribute("usuario");
+    }
+
+    @GetMapping("/Home")
+    public String getHome(@ModelAttribute("usuario") String usuario){
+        if (usuario != null) {
+            // A sessão existe, redirecionar para a página home
             return "Home/home";
+        } else {
+            // A sessão não existe, redirecionar para a página de login
+            return "redirect:/";
         }
     }
 
