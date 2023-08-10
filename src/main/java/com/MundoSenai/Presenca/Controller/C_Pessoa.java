@@ -1,11 +1,14 @@
 package com.MundoSenai.Presenca.Controller;
 
 import com.MundoSenai.Presenca.Model.M_Pessoa;
+import com.MundoSenai.Presenca.Model.M_Resposta;
 import com.MundoSenai.Presenca.Service.S_Pessoa;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @SessionAttributes("usuario")
@@ -18,11 +21,14 @@ public class C_Pessoa {
     @PostMapping("/")
     public String postLogin(@RequestParam("usuario") String usuario,
                             @RequestParam("senha") String senha,
-                            HttpSession session){
-        session.setAttribute("usuario",S_Pessoa.getPessoaLogin(usuario,senha));
+                            HttpSession session,
+                            RedirectAttributes redirectAttributes){
+        M_Pessoa pessoa = S_Pessoa.getPessoaLogin(usuario,senha);
+        session.setAttribute("usuario", pessoa);
         if(session.getAttribute("usuario") == null){
             return "Login/login";
         }else{
+            redirectAttributes.addFlashAttribute("nome",pessoa.getNome());
             return "redirect:/Home";
         }
     }
@@ -49,21 +55,26 @@ public class C_Pessoa {
     }
 
     @PostMapping("/cadastro")
-    public String postCadastro(@RequestParam("nome") String nome,
-                               @RequestParam("email") String email,
-                               @RequestParam("cpf") String cpf,
-                               @RequestParam("telefone") String telefone,
-                               @RequestParam("data_nasc") String data_nascimento,
-                               @RequestParam("senha") String senha,
-                               @RequestParam("confsenha") String conf_senha,
-                               Model model){
-        String mensagem = S_Pessoa.cadastrarPessoa(nome, email, cpf, telefone, data_nascimento, senha, conf_senha);
-        model.addAttribute("mensagem",mensagem);
-        model.addAttribute("nome",nome);
-        model.addAttribute("email",email);
-        model.addAttribute("cpf",cpf);
-        model.addAttribute("telefone",telefone);
-        model.addAttribute("data_nasc",data_nascimento);
-        return "Pessoa/cadastro";
+    public RedirectView postCadastro(@RequestParam("nome") String nome,
+                                     @RequestParam("email") String email,
+                                     @RequestParam("cpf") String cpf,
+                                     @RequestParam("telefone") String telefone,
+                                     @RequestParam("data_nasc") String data_nascimento,
+                                     @RequestParam("senha") String senha,
+                                     @RequestParam("confsenha") String conf_senha,
+                                     RedirectAttributes redirectAttributes) {
+        M_Resposta resposta = S_Pessoa.cadastrarPessoa(nome, email, cpf, telefone, data_nascimento, senha, conf_senha);
+        redirectAttributes.addFlashAttribute("mensagem", resposta.getMensagem());
+        if (resposta.getSucesso()) {
+            return new RedirectView("/", true);
+        } else {
+            redirectAttributes.addFlashAttribute("mensagem", resposta.getMensagem());
+            redirectAttributes.addFlashAttribute("nome", nome);
+            redirectAttributes.addFlashAttribute("email", email);
+            redirectAttributes.addFlashAttribute("cpf", cpf);
+            redirectAttributes.addFlashAttribute("telefone", telefone);
+            redirectAttributes.addFlashAttribute("data_nasc", data_nascimento);
+            return new RedirectView("/cadastro", true);
+        }
     }
 }

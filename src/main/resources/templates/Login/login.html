@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -21,6 +21,10 @@
 </head>
 <body>
 <div class="container">
+<!--    <div th:if="${mensagem}" th:utext="${mensagem}"></div>-->
+    <div th:if="${mensagem}">
+        <p th:text="${mensagem}" class="mensagem"></p>
+    </div>
     <h1 class="text-center">Mundo SENAI</h1>
     <form action="/" method="post">
         <div class="input-group mb-3">

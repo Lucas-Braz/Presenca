@@ -1,6 +1,7 @@
 package com.MundoSenai.Presenca.Service;
 
 import com.MundoSenai.Presenca.Model.M_Pessoa;
+import com.MundoSenai.Presenca.Model.M_Resposta;
 import com.MundoSenai.Presenca.Repository.R_Pessoa;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,9 @@ public class S_Pessoa {
         }
     }
 
-    public static String cadastrarPessoa(String nome, String email, String cpf,
-                                String telefone, String data_nascimento,
-                                String senha, String conf_senha){
+    public static M_Resposta cadastrarPessoa(String nome, String email, String cpf,
+                                             String telefone, String data_nascimento,
+                                             String senha, String conf_senha){
         boolean cadastroValido = true;
         String mensagemRetorno = "";
         telefone = NumberCleaner.cleanNumber(telefone);
@@ -73,8 +74,10 @@ public class S_Pessoa {
                 }else{
                     mensagemRetorno += "Erro ao cadastrar";
                 }
+                cadastroValido = false;
             }
         }
-        return mensagemRetorno;
+        M_Resposta m_resposta = new M_Resposta(cadastroValido,mensagemRetorno);
+        return m_resposta;
     }
 }
