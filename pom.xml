@@ -51,6 +51,12 @@
 			<artifactId>spring-boot-autoconfigure</artifactId>
 			<version>3.0.7</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>4.11.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -61,5 +67,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
