@@ -55,26 +55,14 @@ public class C_Pessoa {
     }
 
     @PostMapping("/cadastro")
-    public RedirectView postCadastro(@RequestParam("nome") String nome,
+    @ResponseBody
+    public M_Resposta postCadastro(@RequestParam("nome") String nome,
                                      @RequestParam("email") String email,
                                      @RequestParam("cpf") String cpf,
                                      @RequestParam("telefone") String telefone,
                                      @RequestParam("data_nasc") String data_nascimento,
                                      @RequestParam("senha") String senha,
-                                     @RequestParam("confsenha") String conf_senha,
-                                     RedirectAttributes redirectAttributes) {
-        M_Resposta resposta = S_Pessoa.cadastrarPessoa(nome, email, cpf, telefone, data_nascimento, senha, conf_senha);
-        redirectAttributes.addFlashAttribute("mensagem", resposta.getMensagem());
-        if (resposta.getSucesso()) {
-            return new RedirectView("/", true);
-        } else {
-            redirectAttributes.addFlashAttribute("mensagem", resposta.getMensagem());
-            redirectAttributes.addFlashAttribute("nome", nome);
-            redirectAttributes.addFlashAttribute("email", email);
-            redirectAttributes.addFlashAttribute("cpf", cpf);
-            redirectAttributes.addFlashAttribute("telefone", telefone);
-            redirectAttributes.addFlashAttribute("data_nasc", data_nascimento);
-            return new RedirectView("/cadastro", true);
-        }
+                                     @RequestParam("confsenha") String conf_senha) {
+        return S_Pessoa.cadastrarPessoa(nome, email, cpf, telefone, data_nascimento, senha, conf_senha);
     }
 }
